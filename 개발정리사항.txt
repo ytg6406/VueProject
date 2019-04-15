@@ -81,4 +81,27 @@
         - 1) Html5 히스토리 모드와 해시모드에서 모두 동일한 방식으로 작동한다. 모드에 따른 코드 수정이 필요 없다.
         - 2) 히스토리 모드에서 router-link는 클릭 이벤트를 차단하여 location이동을 방지할 수 있다.(흔히 클라이언트가 말하는 화면의 깜빡거림)
 
-    
+* 동적 라우팅을 이용하려는 경우에는 아래와 같이 설정을 하면 된다.
+    - {path : '/b/:bid', component : Board},
+    - path 에서 /:bid 라고 하는 부분에 /: 을 이용하면 뒤에 오는 board id를 매핑 할 수 있다.
+    - http://localhost:3000/b 로 접속을 하면 NotFound쪽으로 진입을 한다. 
+
+* 동적 라우팅에서 값을 가져오는 방법
+    - export default {
+         created(){
+             console.log(this.$route) 
+         }
+      }
+    - this.$route 를 사용하면 hash, query, path, parameter 까지 가져올 수 있다.
+
+* 중첩라우팅
+    -  아래와 같이 특정 route 경로안에 children 으로 선언 후 배열로 path를 추가 설정을 해준다.
+        {path : '/b/:bid', component : Board, children:[
+          {path: 'c/:cid', component: Card}
+        ]},
+    - 이렇게만 설정을 하게되면 Board.vue에서 card.vue 파일이 나오지 않는다.
+      해당 vue 파일이 렌더링 될 위치를 설정해주어야 하고, 우선적으로 router-view를 선언한다.
+    - 아래와 같이 설정을 하면 처음에는 created 시점에 설정한 것처럼 잘 이동을 하지만, /c/1에서 /c/2로 가면 cid가 안 바뀐다.
+        <router-link to="/b/${bid}/c/1">Card1</router-link>
+        <router-link to="/b/${bid}/c/2">Card2</router-link>
+    - 그래서 라우트가 변경되는 것을 확인 하기 위해 watch 라는 것을 이용하여 route를 감시할 수 있다.
